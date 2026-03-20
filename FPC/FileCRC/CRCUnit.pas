@@ -16,7 +16,7 @@ unit CRCUnit;
 
 interface
 
-{$DEFINE COMPCRCTABLES}           // Dynamically Compute CRC Tables (Instead of Static CRC Tables)
+{$DEFINE COMPCRCTABLES1}           // Dynamically Compute CRC Tables (Instead of Static CRC Tables)
 
 function  CRC32_BE_Update(Const Data: array of Byte; Const DataLen: Longword; Const InitValue: Longword; Const XorMode: Integer): Longword;
 function  CRC32_LE_Update(Const Data: array of Byte; Const DataLen: Longword; Const InitValue: Longword; Const XorMode: Integer): Longword;

@@ -9,14 +9,17 @@ unit Unit1;
 // Distributed under the terms of the MIT license: see LICENSE.txt
 
 {$IFDEF FPC}
-  {$mode objfpc}{$H+}
-//  {$mode delphi}
+//  {$mode objfpc}{$H+}
+  {$mode delphi}
 {$ENDIF}
 {$IFDEF FPC_OBJFPC} {$DEFINE IS_FPC_OBJFPC_MODE} {$ENDIF}
 
 interface
 
 uses
+{$IFDEF PASJS}
+Web, WebCtrls, WebCtrlsMore ,
+ {$ENDIF}
   Classes, SysUtils, Forms, Controls, StdCtrls, Dialogs, ExtCtrls
   {$IFNDEF FPC}, XPMan{$ENDIF};
 
@@ -327,7 +330,12 @@ begin
   // Inits
   SaveLenFile:=LenFile;
   FileError:=0;
+
+  {$IFDEF PASJS}
+
+  {$ELSE}
   // Opens file (read only mode)
+
   HFile := {$IFDEF USE_FPC_UTF8_FILEFUNC}FileOpenUTF8{$ELSE}FileOpen{$ENDIF}(FileName,fmOpenRead);
   if HFile=THandle(-1) then
     // Error, if can't open it
@@ -404,6 +412,8 @@ begin
       // Finally, closes file
       FileClose(HFile);
     end;
+   {$ENDIF}
+
   // Error(s) ?
   if FileError<>0 then
     {$IFDEF USE_THREAD}
@@ -423,6 +433,11 @@ end;
 // Find file and its size
 //
 function  FindFileSize(Const Filename: String; Var LenFile: Int64): Boolean;
+
+{$IFDEF PASJS}
+ begin
+{$ELSE}
+
 {$if Defined(FPC) and Defined(UNICODE)}
 var SR: TUnicodeSearchRec;
 {$else}
@@ -434,6 +449,7 @@ begin
   LenFile:=SR.Size;
   SysUtils.FindClose(SR);
   Result:=True;
+{$ENDIF}
 end;
 
 //
@@ -454,7 +470,11 @@ begin
       Inc(i2);
     end;
   SetLength(Result,ALen);
+  {$IFDEF PASJS}
+{$ELSE}
+
   Move(s1,Result[1],ALen*SizeOf(Char));
+  {$ENDIF}
 end;
 
 end.

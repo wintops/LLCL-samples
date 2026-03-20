@@ -1,0 +1,140 @@
+Form1.BeginUpdate;
+  Form1.Left := 198;
+  Form1.Height := 242;
+  Form1.Top := 114;
+  Form1.Width := 561;
+  Form1.BorderStyle := bsSingle;
+  Form1.Caption := 'Compare and Search for Identical Files';
+  Form1.ClientHeight := 242;
+  Form1.ClientWidth := 561;
+  Form1.OnDestroy := FormDestroy;
+  GroupBox1:=TGroupBox.Create(Form1);
+GroupBox1.BeginUpdate;
+GroupBox1.Parent:=Form1;
+    GroupBox1.Left := 8;
+    GroupBox1.Height := 88;
+    GroupBox1.Top := 8;
+    GroupBox1.Width := 441;
+    GroupBox1.Caption := 'Directories';
+    GroupBox1.ClientHeight := 70;
+    GroupBox1.ClientWidth := 437;
+    Edit1:=TEdit.Create(GroupBox1);
+Edit1.BeginUpdate;
+Edit1.Parent:=GroupBox1;
+      Edit1.Left := 8;
+      Edit1.Height := 21;
+      Edit1.Top := 4;
+      Edit1.Width := 314;
+    Edit1.EndUpdate;
+
+    Button4:=TButton.Create(GroupBox1);
+Button4.BeginUpdate;
+Button4.Parent:=GroupBox1;
+      Button4.Left := 328;
+      Button4.Height := 29;
+      Button4.Top := 0;
+      Button4.Width := 105;
+      Button4.Caption := 'Directory &1';
+      Button4.OnClick := Button4Click;
+    Button4.EndUpdate;
+
+    Edit2:=TEdit.Create(GroupBox1);
+Edit2.BeginUpdate;
+Edit2.Parent:=GroupBox1;
+      Edit2.Left := 8;
+      Edit2.Height := 21;
+      Edit2.Top := 40;
+      Edit2.Width := 314;
+    Edit2.EndUpdate;
+
+    Button5:=TButton.Create(GroupBox1);
+Button5.BeginUpdate;
+Button5.Parent:=GroupBox1;
+      Button5.Left := 328;
+      Button5.Height := 29;
+      Button5.Top := 36;
+      Button5.Width := 105;
+      Button5.Caption := 'Directory &2';
+      Button5.OnClick := Button5Click;
+    Button5.EndUpdate;
+
+  GroupBox1.EndUpdate;
+
+  Button1:=TButton.Create(Form1);
+Button1.BeginUpdate;
+Button1.Parent:=Form1;
+    Button1.Left := 456;
+    Button1.Height := 34;
+    Button1.Top := 10;
+    Button1.Width := 97;
+    Button1.Cancel := True;
+    Button1.Caption := '&Quit';
+    Button1.OnClick := Button1Click;
+  Button1.EndUpdate;
+
+  Button2:=TButton.Create(Form1);
+Button2.BeginUpdate;
+Button2.Parent:=Form1;
+    Button2.Left := 456;
+    Button2.Height := 31;
+    Button2.Top := 54;
+    Button2.Width := 97;
+    Button2.Caption := '&Compare';
+    Button2.Default := True;
+    Button2.OnClick := Button2Click;
+  Button2.EndUpdate;
+
+  Button3:=TButton.Create(Form1);
+Button3.BeginUpdate;
+Button3.Parent:=Form1;
+    Button3.Left := 456;
+    Button3.Height := 31;
+    Button3.Top := 94;
+    Button3.Width := 97;
+    Button3.Caption := '&Results';
+    Button3.Enabled := False;
+    Button3.OnClick := Button3Click;
+  Button3.EndUpdate;
+
+  StaticText1:=TStaticText.Create(Form1);
+StaticText1.BeginUpdate;
+StaticText1.Parent:=Form1;
+    StaticText1.Left := 8;
+    StaticText1.Height := 97;
+    StaticText1.Top := 136;
+    StaticText1.Width := 545;
+    StaticText1.BorderStyle := sbsSunken;
+  StaticText1.EndUpdate;
+
+  ProgressBar1:=TProgressBar.Create(Form1);
+ProgressBar1.BeginUpdate;
+ProgressBar1.Parent:=Form1;
+    ProgressBar1.Left := 8;
+    ProgressBar1.Height := 19;
+    ProgressBar1.Top := 104;
+    ProgressBar1.Width := 441;
+    ProgressBar1.Step := 1;
+  ProgressBar1.EndUpdate;
+
+  Button6:=TButton.Create(Form1);
+Button6.BeginUpdate;
+Button6.Parent:=Form1;
+    Button6.Left := 179;
+    Button6.Height := 22;
+    Button6.Top := 3;
+    Button6.Width := 23;
+    Button6.OnClick := Button6Click;
+    Button6.Visible := False;
+  Button6.EndUpdate;
+
+  Timer1:=TTimer.Create(Form1);
+Timer1.BeginUpdate;
+Timer1.Parent:=Form1;
+    Timer1.Enabled := False;
+    Timer1.Interval := 50;
+    Timer1.OnTimer := Timer1Timer;
+    Timer1.left := 141;
+  Timer1.EndUpdate;
+
+Form1.EndUpdate;
+

@@ -37,11 +37,21 @@ unit Unit1;
 //  {$mode delphi}
 {$ENDIF}
 
+{$IFDEF PASJS}
+{$mode delphi}{$H+}
+{$ENDIF}
+
 interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Dialogs,
-  Windows, Graphics, {$IFNDEF FPC}Messages, OpenGL, XPMan{$ELSE}GL{$ENDIF};
+  Windows, Graphics,
+  {$IFDEF PASJS}
+  Web, WebCtrls, WebCtrlsMore , GLUtils, GLTypes,WebGL
+   {$ELSE}
+  {$IFNDEF FPC}Messages, OpenGL, XPMan{$ELSE}GL{$ENDIF}
+  {$ENDIF}
+  ;
 
 type
 
@@ -89,15 +99,7 @@ implementation
   {$R *.dfm}
 {$ENDIF}
 
-type
-  TContext_Struct = record
-    PalStatus:      Integer; // 0=Palettes not created, 1=Palettes created
-    AllPalettes:    array [0..Pred(SizeOf(LOGPALETTE)+(256*SizeOf(PALETTEENTRY)))] of Byte;
-    aPalette:       HPALETTE;
-    CurIndex:       Integer;
-  end;
-
-const
+ const
     Fire_MaxCur = 100;
     Fire_GlowCols:  array [0..3,0..3] of GLFloat = (
         (1,1,0,1),(1,0,0,0),(0.1,0.1,0.1,1),(0,0,0,0));
@@ -109,7 +111,38 @@ type
     lix,lex:        Longword;
   end;
 
-  FireContext_Struct = record
+{$IFDEF PASJS}
+    type
+  TContext_Struct = record
+    PalStatus:      Integer; // 0=Palettes not created, 1=Palettes created
+    AllPalettes:     Byte;
+    aPalette:       Integer;
+    CurIndex:       Integer;
+  end;
+
+    FireContext_Struct = record
+    Status:         Integer; // 0= Not initialized, 1=Initialized
+    FormHDC:        Integer;
+    ORC:            Integer;
+    TimerIndex:     Integer;
+    TimerCur:       Byte;
+    Data:           array[0..Pred(Fire_MaxCur)] of FireData_Struct;
+  end;
+
+   // procedure TPaintForm(aFormHandle: Integer; aHDC: Integer); forward;
+   // procedure FireInit(Const hForm:  Integer); forward;
+  //  procedure FireStop(Const hForm: Integer); forward;
+ {$ELSE}
+   type
+  TContext_Struct = record
+    PalStatus:      Integer; // 0=Palettes not created, 1=Palettes created
+    AllPalettes:    array [0..Pred(SizeOf(LOGPALETTE)+(256*SizeOf(PALETTEENTRY)))] of Byte;
+    aPalette:       HPALETTE;
+    CurIndex:       Integer;
+  end;
+
+
+    FireContext_Struct = record
     Status:         Integer; // 0= Not initialized, 1=Initialized
     FormHDC:        HDC;
     ORC:            HGLRC;
@@ -118,6 +151,20 @@ type
     Data:           array[0..Pred(Fire_MaxCur)] of FireData_Struct;
   end;
 
+    procedure TPaintForm(aFormHandle: THandle; aHDC: HDC); forward;
+    procedure FireInit(Const hForm: THandle); forward;
+    procedure FireStop(Const hForm: THandle); forward;
+
+    procedure FireEvent(); forward;
+procedure FE_Glow(Const cr, cg, cb, ca, rr, rg, rb, ra, Size: GLFloat); forward;
+{$ENDIF}
+
+
+
+
+
+
+ type
   ImageContext_Struct = record
     WidthDiff:      Integer;
     HeightDiff:     Integer;
@@ -135,12 +182,11 @@ procedure ModifyButton(Const CurButton: TObject; Const State: Boolean; Const New
 
 procedure TCreatePalette; forward;
 procedure TChangePalette; forward;
-procedure TPaintForm(aFormHandle: THandle; aHDC: HDC); forward;
 
-procedure FireInit(Const hForm: THandle); forward;
-procedure FireEvent(); forward;
-procedure FE_Glow(Const cr, cg, cb, ca, rr, rg, rb, ra, Size: GLFloat); forward;
-procedure FireStop(Const hForm: THandle); forward;
+
+
+
+
 
 //------------------------------------------------------------------------------
 
@@ -166,12 +212,16 @@ end;
 
 procedure TForm1.FormCreate(Sender: TObject);
 begin
-  FillChar(TContext, SizeOf(TContext), 0);
-  FillChar(FireContext, SizeOf(FireContext), 0);
-  ImageContext.HeightDiff := Height - Image1.Height;
-  ImageContext.WidthDiff := Width - Image1.Width;
-  // (Double buffering requires LLCL_OPT_DOUBLEBUFF in LLCLOptions.inc)
-  DoubleBuffered := True;
+
+
+{$IFNDEF PASJS}
+
+FillChar(TContext, SizeOf(TContext), 0);
+FillChar(FireContext, SizeOf(FireContext), 0);
+ImageContext.HeightDiff := Height - Image1.Height;
+ImageContext.WidthDiff := Width - Image1.Width;
+// (Double buffering requires LLCL_OPT_DOUBLEBUFF in LLCLOptions.inc)
+DoubleBuffered := True;
 {$IF Declared(LLCLVersion) and Not Defined(LLCL_OPT_EXTENDGRAPHICAL)}
   // A message to indicate that the LLCL has to be compiled with
   // the LLCL_OPT_EXTENDGRAPHICAL option (no way to check it here),
@@ -186,21 +236,26 @@ begin
   'LLCL has not been compiled with the "Extended graphical options".' + sLineBreak + sLineBreak +
   'See LLCL_OPT_EXTENDGRAPHICAL in option file LLCLOptions.inc';
 {$IFEND}
+{$IFEND}
 end;
 
 procedure TForm1.FormDestroy(Sender: TObject);
 begin
   Timer1.Enabled := False;
+ {$IFNDEF PASJS}
   if TContext.PalStatus<>0 then
     DeleteObject(TContext.aPalette);
   if FireContext.Status<>0 then
     FireStop(Form1.Handle);
+  {$IFEND}
 end;
 
 procedure TForm1.FormPaint(Sender: TObject);
 begin
+   {$IFNDEF PASJS}
   if IsTRunning then
     TPaintForm(Form1.Handle, Canvas.Handle);
+     {$IFEND}
 end;
 
 procedure TForm1.FormResize(Sender: TObject);
@@ -246,19 +301,26 @@ begin
     begin
       Timer1.Enabled := False;
       ModifyButton(Sender, True, '&Fire');
+       {$IFNDEF PASJS}
       FireStop(Form1.Handle);
-      Application.ProcessMessages;
-      Sleep(50);
+        Application.ProcessMessages;
+         Sleep(50);
+            {$IFEND}
+
+
       Invalidate;   // (Call to restore form background)
     end
   else                          // Begin
     begin
       Label1.Caption := 'Please wait...';
       Label1.Visible := True;
-      Application.ProcessMessages;
+
       ModifyButton(Sender, False, '&End');
+       {$IFNDEF PASJS}
+          Application.ProcessMessages;
       if FireContext.Status=0 then
         FireInit(Form1.Handle);
+            {$IFEND}
       Timer1.Interval := 5;
       Timer1.Enabled := True;
       Label1.Visible := False;
@@ -272,8 +334,10 @@ begin
   IsImageRunning := not IsImageRunning;
   if not IsImageRunning then    // End
     begin
+              {$IFNDEF PASJS}
       if not Image1.Picture.Bitmap.Empty then
         Image1.Picture := nil;
+                {$IFEND}
       Label1.Visible := False;
       ModifyButton(Sender, True, '&Image...');
       Image1.Visible := False;
@@ -294,7 +358,9 @@ begin
       // Loads it
       BitmapLoaded := True;
       try
+          {$IFNDEF PASJS}
         Image1.Picture.LoadFromFile(OpenDialog1.FileName);
+              {$IFEND}
       except
         BitmapLoaded := False;
       end;
@@ -314,11 +380,14 @@ end;
 
 procedure TForm1.Timer1Timer(Sender: TObject);
 begin
+  {$IFNDEF PASJS}
   if IsTRunning then
     TChangePalette()
   else
     if IsFireRunning then
       FireEvent();
+   {$IFEND}
+
 end;
 
 //------------------------------------------------------------------------------
@@ -327,10 +396,11 @@ end;
 // Creates all the palette data
 //
 procedure TCreatePalette;
-var ptrPalette: ^LOGPALETTE;
+{$IFNDEF PASJS}    var ptrPalette: ^LOGPALETTE;    {$IFEND}
 var i: Integer;
 var b: Byte;
 begin
+     {$IFNDEF PASJS}
   ptrPalette := @TContext.AllPalettes;
   // Initializes general fields
   ptrPalette^.palVersion := $0300;
@@ -358,21 +428,25 @@ begin
   TContext.aPalette := CreatePalette(ptrPalette^);
   if TContext.aPalette<>0 then
     TContext.PalStatus := 1;
+
+   {$IFEND}
 end;
 
 //
 // Changes palette
 //
 procedure TChangePalette;
-var ptrPalette: ^LOGPALETTE;
+{$IFNDEF PASJS} var ptrPalette: ^LOGPALETTE;      {$IFEND}
 begin
+  {$IFNDEF PASJS}
   if TContext.PalStatus=0 then Exit;  // Sanity
   ptrPalette := @TContext.AllPalettes;
   TContext.CurIndex := (TContext.CurIndex+1) and 127;
   AnimatePalette(TContext.aPalette,0, 128, {$IFNDEF FPC}@{$ENDIF}(ptrPalette^.palPalEntry[TContext.CurIndex]));
   InvalidateRect(Form1.Handle, nil, False);
+     {$IFEND}
 end;
-
+ {$IFNDEF PASJS}
 //
 // Paints Form1 background
 //
@@ -511,6 +585,7 @@ begin
     WGLDeleteContext(FireContext.ORC);
   FireContext.Status := 0;
 end;
+  {$IFEND}
 
 end.
 

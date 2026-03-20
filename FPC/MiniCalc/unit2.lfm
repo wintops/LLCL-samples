@@ -1,12 +1,12 @@
 object Form1: TForm1
   Left = 303
-  Height = 245
+  Height = 206
   Top = 656
-  Width = 229
+  Width = 206
   BorderStyle = bsSingle
   Caption = 'Mini Calculator'
-  ClientHeight = 245
-  ClientWidth = 229
+  ClientHeight = 206
+  ClientWidth = 206
   KeyPreview = True
   Position = poDesktopCenter
   LCLVersion = '4.99.0.0'
