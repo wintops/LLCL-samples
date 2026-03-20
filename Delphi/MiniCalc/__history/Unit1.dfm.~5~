@@ -3,8 +3,8 @@ object Form1: TForm1
   Top = 114
   BorderStyle = bsSingle
   Caption = 'MiniCalculator'
-  ClientHeight = 216
-  ClientWidth = 222
+  ClientHeight = 206
+  ClientWidth = 206
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -197,5 +197,7 @@ object Form1: TForm1
     Default = True
     TabOrder = 0
     OnClick = HiddenButtonClick
+  end
+  object XPManifest1: TXPManifest
   end
 end

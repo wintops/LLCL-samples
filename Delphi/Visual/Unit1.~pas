@@ -167,7 +167,7 @@ begin
   ImageContext.HeightDiff := Height - Image1.Height;
   ImageContext.WidthDiff := Width - Image1.Width;
   // (Double buffering requires LLCL_OPT_DOUBLEBUFF in LLCLOptions.inc)
-  DoubleBuffered := True;
+ // DoubleBuffered := True;
 {$IF Declared(LLCLVersion) and Not Defined(LLCL_OPT_EXTENDGRAPHICAL)}
   // A message to indicate that the LLCL has to be compiled with
   // the LLCL_OPT_EXTENDGRAPHICAL option (no way to check it here),

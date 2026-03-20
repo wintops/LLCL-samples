@@ -5,9 +5,9 @@ program MiniCalc;
 // Copyright (c) 2015 ChrisF
 // Distributed under the terms of the MIT license: see LICENSE.txt
 
-// {$APPTYPE CONSOLE}
+  {$APPTYPE CONSOLE}
 
-
+ {$UNDEF UNICODE}
 
 
 uses
@@ -21,9 +21,10 @@ begin
 
 UnicodeEnabledOS:=true;
   Application.Initialize;
-
+        writeln('1');
 
   Application.CreateForm(TForm1, Form1);
+     writeln('2');
 
   Application.Run;
 end.

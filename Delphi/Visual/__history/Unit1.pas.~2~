@@ -41,14 +41,16 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, StdCtrls, ExtCtrls, Dialogs,
-  Windows, Graphics, {$IFNDEF FPC}Messages, OpenGL{$ELSE}GL{$ENDIF};
+  Windows, Graphics, {$IFNDEF FPC}Messages, OpenGL, XPMan{$ELSE}GL{$ENDIF};
 
 type
 
   { TForm1 }
 
   TForm1 = class(TForm)
- 
+{$IFNDEF FPC}
+    XPManifest1: TXPManifest;
+{$ENDIF}
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
@@ -56,6 +58,8 @@ type
     Image1: TImage;
     Label1: TLabel;
     OpenDialog1: TOpenDialog;
+    StaticText1: TStaticText;
+    StaticText2: TStaticText;
     Timer1: TTimer;
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -167,7 +171,7 @@ begin
   ImageContext.HeightDiff := Height - Image1.Height;
   ImageContext.WidthDiff := Width - Image1.Width;
   // (Double buffering requires LLCL_OPT_DOUBLEBUFF in LLCLOptions.inc)
-  DoubleBuffered := True;
+ // DoubleBuffered := True;
 {$IF Declared(LLCLVersion) and Not Defined(LLCL_OPT_EXTENDGRAPHICAL)}
   // A message to indicate that the LLCL has to be compiled with
   // the LLCL_OPT_EXTENDGRAPHICAL option (no way to check it here),
@@ -206,7 +210,7 @@ begin
   if i2<0 then i2 := 0;
   i1 := Width - ImageContext.WidthDiff;
   if i1<0 then i1 := 0;
- // Image1.SetBounds(Image1.Left, Image1.Top, i1, i2);
+  Image1.SetBounds(Image1.Left, Image1.Top, i1, i2);
 end;
 
 procedure TForm1.Button1Click(Sender: TObject);   // Quit
@@ -216,7 +220,7 @@ end;
 
 procedure TForm1.Button2Click(Sender: TObject);   // T
 begin
- // StaticText2.Visible := False;
+  StaticText2.Visible := False;
   IsTRunning := not IsTRunning;
   if not IsTRunning then        // End
     begin
@@ -236,7 +240,7 @@ end;
 
 procedure TForm1.Button3Click(Sender: TObject);   // Fire
 begin
-  //StaticText2.Visible := False;
+  StaticText2.Visible := False;
   IsFireRunning := not IsFireRunning;
   if not IsFireRunning then     // End
     begin
@@ -264,7 +268,7 @@ end;
 procedure TForm1.Button4Click(Sender: TObject);
 var BitmapLoaded: Boolean;
 begin
- // StaticText2.Visible := False;
+  StaticText2.Visible := False;
   IsImageRunning := not IsImageRunning;
   if not IsImageRunning then    // End
     begin

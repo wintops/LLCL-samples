@@ -94,7 +94,7 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=.\LLCLUnits;.\PasZLib
+SearchPath=C:\work\LLCL-master\sources;C:\lib\PasZLib-SG\paszlib
 Packages=vcl;rtl;vclx;VclSmp;vclshlctrls
 Conditionals=LLCL_OPT_EXTENDGRAPHICAL
 DebugSourceDirs=
@@ -105,8 +105,12 @@ HostApplication=
 Launcher=
 UseLauncher=0
 DebugCWD=
+[Language]
+ActiveLang=
+ProjectLang=
+RootDir=
 [Version Info]
-IncludeVerInfo=0
+IncludeVerInfo=1
 AutoIncBuild=0
 MajorVer=1
 MinorVer=0
@@ -117,19 +121,19 @@ PreRelease=0
 Special=0
 Private=0
 DLL=0
-Locale=1036
+Locale=1033
 CodePage=1252
 [Version Info Keys]
 CompanyName=
-FileDescription=
+FileDescription=Visual
 FileVersion=1.0.0.0
 InternalName=
 LegalCopyright=
 LegalTrademarks=
 OriginalFilename=
-ProductName=
+ProductName=Visual
 ProductVersion=1.0.0.0
-Comments=
+ProgramID=com.embarcadero.Visual
 [HistoryLists\hlConditionals]
 Count=1
 Item0=LLCL_OPT_EXTENDGRAPHICAL
@@ -137,5 +141,6 @@ Item0=LLCL_OPT_EXTENDGRAPHICAL
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=1
-Item0=.\LLCLUnits;.\PasZLib
+Count=2
+Item0=C:\work\LLCL-master\sources;C:\lib\PasZLib-SG\paszlib
+Item1=.\LLCLUnits;.\PasZLib
